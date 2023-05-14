@@ -1,4 +1,4 @@
-from pymongo_get_database import get_db
+from db import get_db
 import random
 import socket 
 from random import randint
