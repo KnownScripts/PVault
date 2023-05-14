@@ -1,57 +1,136 @@
 from pymongo_get_database import get_db
+import random
+import socket 
+from random import randint
+hostname = socket.gethostname()
+IPAddr = socket.gethostbyname(hostname)
 
-defs = {"_id" : "ACCOUNTS","USERNAME": '',"EMAIL": '',"PASSWORD": ''}
+
+
+
+compdata = {}
+
+
+
+
+import os
+#kausta asukoht/teekond
+directory = "./Files"
+
+def dire():
+  if not os.path.exists(directory):
+    os.makedirs(directory)
+    print("Saved Accounts directory created!")
+
+dire()
+
+class Account():
+  #määran konstruktoris klassi atribuudid
+  def __init__(self, item):
+    self.accounts = item
+  #funktsioon kontojääki ülekirjutamiseks/uuendamiseks
+  def deposit(self,item):
+    self.balance += item
+    print("Successfully deposited data")
+
+
+def save_data():
+    dbname = get_db()
+ 
+   
+    collection_name = dbname["DATA"]
+    a = collection_name.find()
+
+
+    for b in a:
+
+        filename = 'accs.json'
+        file = open(directory+"/"+filename,"a")
+        file.write("\nAccount data:%s" %b)
+        file.close()
+        
+        print("Account data saved")
+        #menu()
+
 
 def printdata():
     dbname = get_db()
  
     # Create a new collection
-    collection_name = dbname["fivem"]
+    collection_name = dbname["DATA"]
     
     item_details = collection_name.find()
     for item in item_details:
         # This does not give a very readable output
         print(item)
+       
 
 def endata():
-    inp1 = input("Enter your username: ")
-    inp2 = input("Enter your email: ")
-    inp3 = input("Enter your password: ")
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+    inp1 = input("Username: ")
+    inp2 = input("Email: ")
+    inp3 = input("Password: ")
 
-    defs.update({"USERNAME":inp1})
-    defs.update({"EMAIL":inp2})
-    defs.update({"PASSWORD":inp3})
+    compdata.update({"_id": random.randrange(2, 10000)})
+    
+    compdata.update({"USERNAME": inp1})
+
+
+    compdata.update({"EMAIL": inp2})
+
+
+
+    compdata.update({"PASSWORD": inp3})
+
+
+    compdata.update({"HOSTNAME": hostname})
+
+    compdata.update({"ADDRESS": IPAddr})
+
+
+    
     send()
     menu()
 
 
-def getdata():
-    user = input("Get your data: ")
+
 
 
 def send():
     dbname = get_db()
-    collection_name = dbname["fivem"]
-    collection_name.insert_many([defs])
+    collection_name = dbname["DATA"]
+    collection_name.insert_many([compdata])
 
 
+    
 
 def menu():
     print("""
 
     1.Get your data
     2.Enter your data
+    3.Save your data to an file
     """)
 
-    kasutaja = input("Sisesta valikud: ")
+    u = input("Enter your options:  ")
     
     while True:
-        if kasutaja == '1':
+        if u == '1':
             printdata()
             menu() 
-        elif kasutaja == '2':
+        elif u == '2':
             endata()
+        elif u == '3':
+            save_data()
+            menu()
         else:
-            print("Valige vähemalt 1 valikutest")
-menu()        
+            print("Choose atleast one")
+menu()
+
+
+
+
+
+
     
